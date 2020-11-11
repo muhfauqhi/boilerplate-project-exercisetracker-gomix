@@ -8,19 +8,20 @@ const Exercise = mongoose.model("Exercise");
 
 router.post("/new-user", (req, res) => {
   const { username } = req.body;
-  User.findOne({ username }).then((user) => {
-    if (user) throw new Error("Username already taken");
-    return User.create({ username })
-      .then((user) => {
-        res.status(200).send({
-          username: user.username,
-          _id: user._id,
-        });
-      })
-      .catch((err) => {
-        res.status(500).send(err.message);
+  User.findOne({ username })
+    .then((user) => {
+      if (user) throw new Error("Username already taken");
+      return User.create({ username });
+    })
+    .then((user) => {
+      res.status(200).send({
+        username: user.username,
+        _id: user._id,
       });
-  });
+    })
+    .catch((err) => {
+      res.status(500).send(err.message);
+    });
 });
 
 router.post("/add", (req, res) => {
