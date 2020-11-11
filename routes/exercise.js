@@ -57,31 +57,31 @@ router.get("/log", (req, res) => {
   to = moment(to, "YYYY-MM-DD").isValid()
     ? moment(to, "YYYY-MM-DD")
     : moment().add(1000000000000);
-
-  User.find(userId).then((user) => {
-    if (!user) throw new Error("Unknown user with _id");
-    Exercise.find({ userId })
-      .where("date")
-      .gte(from)
-      .lte(to)
-      .limit(+limit)
-      .exec()
-      .then((log) => {
-        res.status(200).send({
-          _id: user._id,
-          username: user.username,
-          count: log.length,
-          log: log.map((o) => ({
-            description: o.description,
-            duration: o.duration,
-            date: moment(o).format("ddd MMMM DD YYYY"),
-          })),
-        });
-      })
-      .catch((err) => {
-        res.status(500).send(err.message);
-      });
-  });
+  User.findById(userId)
+    .then((user) => {
+      if (!user) throw new Error("Unknown user with _id");
+      Exercise.find({ userId })
+        .where("date")
+        .gte(from)
+        .lte(to)
+        .limit(+limit)
+        .exec()
+        .then((log) =>
+          res.status(200).send({
+            _id: userId,
+            username: user.username,
+            count: log.length,
+            log: log.map((o) => ({
+              description: o.description,
+              duration: o.duration,
+              date: moment(o).format("ddd MMMM DD YYYY"),
+            })),
+          })
+        );
+    })
+    .catch((err) => {
+      res.status(500).send(err.message);
+    });
 });
 
 router.get("/users", (req, res) => {
