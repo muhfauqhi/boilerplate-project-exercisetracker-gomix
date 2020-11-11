@@ -83,4 +83,13 @@ router.get("/log", (req, res) => {
   });
 });
 
+router.get("/users", (req, res) => {
+  User.find({}).then((user) => {
+    if (!user) throw new Error("User empty");
+    return res.status(200).send({
+      user,
+    });
+  });
+});
+
 module.exports = router;
