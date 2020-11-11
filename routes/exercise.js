@@ -38,7 +38,7 @@ router.post("/add", (req, res) => {
       }).then((ex) =>
         res.status(200).send({
           _id: user._id,
-          // username: user.username,
+          username: user.username,
           date: moment(ex.date).format("ddd MMMM DD YYYY"),
           duration,
           description,
