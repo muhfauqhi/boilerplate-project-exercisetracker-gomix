@@ -28,23 +28,22 @@ router.post("/add", (req, res) => {
   let { userId, description, duration, date } = req.body;
   User.findOne({ _id: userId })
     .then((user) => {
-      if (!user) throw new Error("Unknown userId");
+      if (!user) throw new Error("Unknown user with _id");
       date = date || Date.now();
       return Exercise.create({
         description,
         duration,
         date,
         userId,
-      });
-    })
-    .then((result) => {
-      res.status(200).send({
-        username: user.username,
-        description,
-        duration,
-        _id: user._id,
-        date: moment(result.date).format("ddd MMMM DD YYYY"),
-      });
+      }).then((ex) =>
+        res.status(200).send({
+          username: user.username,
+          description,
+          duration,
+          _id: user._id,
+          date: moment(ex.date).format("ddd MMMM DD YYYY"),
+        })
+      );
     })
     .catch((err) => {
       res.status(500).send(err.message);
