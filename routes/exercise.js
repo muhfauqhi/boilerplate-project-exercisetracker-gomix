@@ -26,28 +26,29 @@ router.post("/new-user", (req, res) => {
 
 router.post("/add", (req, res) => {
   let { userId, description, duration, date } = req.body;
-  User.findOne({ _id: userId }).then((user) => {
-    if (!user) throw new Error("Unknown userId");
-    date = date || Date.now();
-    return Exercise.create({
-      description,
-      duration,
-      date,
-      userId,
-    })
-      .then((result) => {
-        res.status(200).send({
-          username: user.username,
-          description,
-          duration,
-          _id: user._id,
-          date: moment(result.date).format("ddd MMMM DD YYYY"),
-        });
-      })
-      .catch((err) => {
-        res.status(500).send(err.message);
+  User.findOne({ _id: userId })
+    .then((user) => {
+      if (!user) throw new Error("Unknown userId");
+      date = date || Date.now();
+      return Exercise.create({
+        description,
+        duration,
+        date,
+        userId,
       });
-  });
+    })
+    .then((result) => {
+      res.status(200).send({
+        username: user.username,
+        description,
+        duration,
+        _id: user._id,
+        date: moment(result.date).format("ddd MMMM DD YYYY"),
+      });
+    })
+    .catch((err) => {
+      res.status(500).send(err.message);
+    });
 });
 
 router.get("/log", (req, res) => {
@@ -86,9 +87,7 @@ router.get("/log", (req, res) => {
 router.get("/users", (req, res) => {
   User.find({}).then((user) => {
     if (!user) throw new Error("User empty");
-    return res.status(200).send({
-      user,
-    });
+    return res.status(200).send(user);
   });
 });
 
