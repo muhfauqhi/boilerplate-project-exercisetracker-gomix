@@ -26,7 +26,7 @@ router.post("/new-user", (req, res) => {
 
 router.post("/add", (req, res) => {
   let { userId, description, duration, date } = req.body;
-  User.findOne({ _id: userId })
+  User.findById(userId)
     .then((user) => {
       if (!user) throw new Error("Unknown user with _id");
       date = date || Date.now();
